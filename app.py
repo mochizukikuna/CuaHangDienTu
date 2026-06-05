@@ -1,10 +1,8 @@
 import os
-# BỔ SUNG: Thêm "session" vào dòng import dưới đây
 from flask import Flask, render_template, redirect, url_for, request, flash, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-# BỔ SUNG: Import thêm Order và OrderItem
 from models import db, User, Product, Order, OrderItem
 
 app = Flask(__name__)
@@ -25,7 +23,6 @@ def load_user(user_id):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-# --- CÁC ROUTE CŨ GIỮ NGUYÊN (Index, Register, Login, Logout, Product CRUD...) ---
 @app.route('/')
 def index():
     search_query = request.args.get('search', '')
@@ -37,14 +34,12 @@ def index():
     paginated_products = products_query.paginate(page=page, per_page=4)
     return render_template('index.html', products=paginated_products, search_query=search_query)
 
-# --- CẬP NHẬT ROUTE ĐĂNG KÝ USER THƯỜNG ---
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         
-        # CỐ ĐỊNH: Luôn là 'user', không lấy từ form chọn như trước nữa
         role = 'user' 
         
         user_exists = User.query.filter_by(username=username).first()
@@ -59,19 +54,15 @@ def register():
             return redirect(url_for('login'))
     return render_template('register.html')
 
-
-# --- THÊM MỚI ROUTE ĐĂNG KÝ ADMIN (Có mã xác thực) ---
 @app.route('/register/admin', methods=['GET', 'POST'])
 def register_admin():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        secret_code = request.form.get('secret_code') # Lấy mã bí mật từ form
+        secret_code = request.form.get('secret_code')
         
-        # Đặt mã bảo mật nội bộ của hệ thống (Bạn có thể đổi thành mã tùy ý)
-        ADMIN_SECRET_KEY = 'TechMartAdmin@2026'
+        ADMIN_SECRET_KEY = 'CuaHangDienTu'
         
-        # Kiểm tra mã bí mật trước khi xử lý tạo tài khoản
         if secret_code != ADMIN_SECRET_KEY:
             flash('Mã xác thực quyền Admin không chính xác! Vui lòng liên hệ cấp trên.', 'danger')
             return render_template('register_admin.html')
@@ -81,7 +72,6 @@ def register_admin():
             flash('Tên tài khoản Admin này đã tồn tại!', 'danger')
         else:
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-            # CỐ ĐỊNH: Thiết lập quyền là 'admin'
             new_admin = User(username=username, password=hashed_password, role='admin')
             db.session.add(new_admin)
             db.session.commit()
@@ -169,11 +159,6 @@ def delete_product(id):
         flash('Đã xóa sản phẩm!', 'success')
     return redirect(url_for('index'))
 
-
-# =======================================================
-# --- THÊM CÁC ROUTE MỚI: GIỎ HÀNG & THANH TOÁN ---
-# =======================================================
-
 @app.route('/cart/add/<int:product_id>')
 @login_required
 def add_to_cart(product_id):
@@ -184,7 +169,6 @@ def add_to_cart(product_id):
     cart = session.get('cart', {})
     p_id_str = str(product_id)
     
-    # Nếu sản phẩm đã có trong giỏ, tăng số lượng thêm 1
     if p_id_str in cart:
         cart[p_id_str] += 1
     else:
@@ -249,7 +233,7 @@ def checkout():
             })
             
     if request.method == 'POST':
-        # 1. Tạo bản ghi đơn hàng mới
+        # 1. Tạo bản ghi đơn hàng
         new_order = Order(user_id=current_user.id, total_amount=total_price)
         db.session.add(new_order)
         db.session.flush() # Đồng bộ tạm thời để lấy ID của đơn hàng vừa tạo
