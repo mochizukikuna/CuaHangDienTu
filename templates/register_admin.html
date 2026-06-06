@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4 card p-4 shadow-sm border-0 border-top border-danger border-4">
+        <h3 class="text-center mb-4 fw-bold text-danger">Đăng Ký Quản Trị Viên</h3>
+        <div class="alert alert-warning py-2 small">
+            ⚠️ Khu vực hạn chế dành cho nội bộ hệ thống TechMart.
+        </div>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tài khoản Admin mới</label>
+                <input type="text" name="username" class="form-control" placeholder="Tên đăng nhập quản trị" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Mật khẩu</label>
+                <input type="password" name="password" class="form-control" placeholder="Mật khẩu bảo mật cao" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold text-danger">Mã Xác Thực Quyền Admin</label>
+                <input type="password" name="secret_code" class="form-control" placeholder="Nhập mã bảo mật nội bộ" required>
+            </div>
+            <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">Xác Nhận Đăng Ký Admin</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

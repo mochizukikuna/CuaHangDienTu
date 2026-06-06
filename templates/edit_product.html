@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 card p-4 shadow">
+        <h3 class="mb-3">Cập nhật sản phẩm: {{ product.name }}</h3>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Tên sản phẩm</label>
+                <input type="text" name="name" class="form-control" value="{{ product.name }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Giá bán</label>
+                <input type="number" name="price" class="form-control" value="{{ product.price }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mô tả</label>
+                <textarea name="description" class="form-control" rows="3">{{ product.description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Thay đổi hình ảnh mới (Nếu có)</label>
+                <input type="file" name="image" class="form-control">
+                <p class="text-muted mt-1 small">File hiện tại: {{ product.image }}</p>
+            </div>
+            <button type="submit" class="btn btn-warning">Cập nhật</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
