@@ -233,12 +233,11 @@ def checkout():
             })
             
     if request.method == 'POST':
-        # 1. Tạo bản ghi đơn hàng
         new_order = Order(user_id=current_user.id, total_amount=total_price)
         db.session.add(new_order)
-        db.session.flush() # Đồng bộ tạm thời để lấy ID của đơn hàng vừa tạo
+        db.session.flush()
         
-        # 2. Tạo các bản ghi chi tiết đơn hàng
+
         for item in cart_items:
             order_item = OrderItem(
                 order_id=new_order.id,
@@ -250,14 +249,12 @@ def checkout():
             
         db.session.commit()
         
-        # 3. Làm sạch giỏ hàng trong session sau khi mua thành công
         session.pop('cart', None)
         flash('Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.', 'success')
         return redirect(url_for('index'))
         
     return render_template('checkout.html', cart_items=cart_items, total_price=total_price)
 
-# Khởi tạo DB tự động tại lần chạy đầu tiên
 with app.app_context():
     db.create_all()
 
