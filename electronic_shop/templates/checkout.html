@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 card p-4 shadow-sm border-0">
+        <h3 class="mb-3 text-center text-success fw-bold">Xác Nhận Đơn Hàng</h3>
+        <hr>
+        <h5 class="mb-3 text-secondary">Thông tin sản phẩm</h5>
+        <ul class="list-group mb-4">
+            {% for item in cart_items %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="fw-bold">{{ item.product.name }}</span>
+                    <small class="text-muted d-block">Số lượng: {{ item.quantity }}</small>
+                </div>
+                <span class="fw-bold text-dark">{{ "{:,.0f}".format(item.item_total) }} VNĐ</span>
+            </li>
+            {% endfor %}
+            <li class="list-group-item d-flex justify-content-between align-items-center bg-light border-top border-2">
+                <span class="fw-bold fs-5 text-dark">Tổng tiền thanh toán:</span>
+                <span class="text-danger fw-bold fs-3">{{ "{:,.0f}".format(total_price) }} VNĐ</span>
+            </li>
+        </ul>
+
+        <h5 class="mb-3 text-secondary">Thông tin nhận hàng</h5>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Họ và tên người nhận</label>
+                <input type="text" class="form-control" placeholder="Nhập tên người nhận" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Số điện thoại liên hệ</label>
+                <input type="tel" class="form-control" placeholder="Nhập số điện thoại" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Địa chỉ giao nhận hàng</label>
+                <textarea class="form-control" rows="2" placeholder="Ghi rõ số nhà, ngõ ngách, tên đường, xã/phường..." required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Phương thức thanh toán</label>
+                <select class="form-select">
+                    <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+                    <option value="bank">Chuyển khoản tài khoản ngân hàng</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-success w-100 py-2 fs-5 mt-3 shadow-sm">Xác Nhận Đặt Hàng</button>
+            <a href="{{ url_for('view_cart') }}" class="btn btn-outline-secondary w-100 mt-2">Quay lại sửa giỏ hàng</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
